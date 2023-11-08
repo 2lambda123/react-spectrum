@@ -23,7 +23,7 @@ import {MenuTriggerState, UNSTABLE_useSubmenuTriggerState} from '@react-stately/
 import {OverlayTriggerStateContext} from './Dialog';
 import {PopoverContext} from './Popover';
 import {PressResponder} from '@react-aria/interactions';
-import React, {createContext, ForwardedRef, forwardRef, ReactNode, RefObject, useContext, useRef} from 'react';
+import React, {createContext, ForwardedRef, forwardRef, ReactElement, ReactNode, RefObject, useContext, useRef} from 'react';
 import {Separator, SeparatorContext} from './Separator';
 import {TextContext} from './Text';
 import {UNSTABLE_useSubmenuTrigger} from '@react-aria/menu';
@@ -60,12 +60,17 @@ export function MenuTrigger(props: MenuTriggerProps) {
   );
 }
 
-export interface SubmenuTriggerProps extends BaseMenuTriggerProps {
-  children?: ReactNode,
+interface InternalSubmenuTriggerProps {
+  /**
+   * The contents of the SubmenuTrigger - a Item and a Menu.
+   */
+  children: ReactElement[],
   targetKey: Key
 }
 
-export function SubmenuTrigger(props: SubmenuTriggerProps) {
+export interface SubmenuTriggerProps extends Omit<InternalSubmenuTriggerProps, 'targetKey'> {}
+
+function SubmenuTrigger(props: InternalSubmenuTriggerProps) {
   let parentMenuState = useContext(MenuStateContext)!;
   let parentMenuProps = useContext(MenuContext)!;
   let parentMenuTriggerState = useContext(MenuTriggerStateContext)!;
@@ -92,6 +97,9 @@ export function SubmenuTrigger(props: SubmenuTriggerProps) {
     </Provider>
   );
 }
+
+let _SubmenuTrigger = SubmenuTrigger as (props: SubmenuTriggerProps) => JSX.Element;
+export {_SubmenuTrigger as SubmenuTrigger};
 
 export interface MenuProps<T> extends Omit<AriaMenuProps<T>, 'children'>, CollectionProps<T>, StyleProps, SlotProps {}
 
