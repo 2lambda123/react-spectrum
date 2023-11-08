@@ -19,15 +19,18 @@ import {filterDOMProps, mergeRefs, useObjectRef} from '@react-aria/utils';
 import {Header} from './Header';
 import {Key, LinkDOMProps} from '@react-types/shared';
 import {KeyboardContext} from './Keyboard';
+import {MenuTriggerState, UNSTABLE_useSubmenuTriggerState} from '@react-stately/menu';
 import {OverlayTriggerStateContext} from './Dialog';
 import {PopoverContext} from './Popover';
 import {PressResponder} from '@react-aria/interactions';
 import React, {createContext, ForwardedRef, forwardRef, ReactNode, RefObject, useContext, useRef} from 'react';
 import {Separator, SeparatorContext} from './Separator';
 import {TextContext} from './Text';
+import {UNSTABLE_useSubmenuTrigger} from '@react-aria/menu';
 
 export const MenuContext = createContext<ContextValue<MenuProps<any>, HTMLDivElement>>(null);
 export const MenuStateContext = createContext<TreeState<unknown> | null>(null);
+export const MenuTriggerStateContext = createContext<MenuTriggerState | null>(null);
 
 export interface MenuTriggerProps extends BaseMenuTriggerProps {
   children?: ReactNode
@@ -47,9 +50,43 @@ export function MenuTrigger(props: MenuTriggerProps) {
       values={[
         [MenuContext, menuProps],
         [OverlayTriggerStateContext, state],
+        [MenuTriggerStateContext, state],
         [PopoverContext, {triggerRef: ref, placement: 'bottom start'}]
       ]}>
       <PressResponder {...menuTriggerProps} ref={ref} isPressed={state.isOpen}>
+        {props.children}
+      </PressResponder>
+    </Provider>
+  );
+}
+
+export interface SubmenuTriggerProps extends BaseMenuTriggerProps {
+  children?: ReactNode,
+  targetKey: Key
+}
+
+export function SubmenuTrigger(props: SubmenuTriggerProps) {
+  let parentMenuState = useContext(MenuStateContext)!;
+  let parentMenuProps = useContext(MenuContext)!;
+  let parentMenuTriggerState = useContext(MenuTriggerStateContext)!;
+  let submenuTriggerState = UNSTABLE_useSubmenuTriggerState({triggerKey: props.targetKey}, parentMenuTriggerState);
+  let triggerNode = parentMenuState.collection.getItem(props.targetKey);
+  let triggerRef = useRef<HTMLButtonElement>(null);
+  let submenuRef = useRef<HTMLDivElement>(null);
+  let {submenuTriggerProps, submenuProps, popoverProps, overlayProps} = UNSTABLE_useSubmenuTrigger({
+    node: triggerNode,
+    parentMenuRef: parentMenuProps.ref,
+    submenuRef
+  }, submenuTriggerState, triggerRef);
+
+  return (
+    <Provider
+      values={[
+        [MenuContext, {...submenuProps, ref: submenuRef}],
+        [OverlayTriggerStateContext, submenuTriggerState],
+        [PopoverContext, {triggerRef, placement: 'bottom start', ...popoverProps, ...overlayProps}]
+      ]}>
+      <PressResponder {...submenuTriggerProps} ref={triggerRef} isPressed={submenuTriggerState.isOpen}>
         {props.children}
       </PressResponder>
     </Provider>
@@ -112,6 +149,7 @@ function MenuInner<T extends object>({props, collection, menuRef: ref}: MenuInne
       <Provider
         values={[
           [MenuStateContext, state],
+          [MenuContext, {...menuProps, ref}],
           [SeparatorContext, {elementType: 'div'}]
         ]}>
         {children}

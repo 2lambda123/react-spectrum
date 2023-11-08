@@ -11,7 +11,7 @@
  */
 
 import {action} from '@storybook/addon-actions';
-import {Button, Calendar, CalendarCell, CalendarGrid, Cell, Checkbox, Column, ColumnResizer, ComboBox, DateField, DateInput, DatePicker, DateRangePicker, DateSegment, Dialog, DialogTrigger, DropZone, FileTrigger, Group, Header, Heading, Input, Keyboard, Label, Link, ListBox, ListBoxItem, ListBoxProps, Menu, MenuItem, MenuTrigger, Modal, ModalOverlay, NumberField, OverlayArrow, Popover, Radio, RadioGroup, RangeCalendar, ResizableTableContainer, Row, SearchField, Section, Select, SelectValue, Separator, Slider, SliderOutput, SliderThumb, SliderTrack, Switch, Tab, Table, TableBody, TableHeader, TabList, TabPanel, Tabs, TabsProps, Tag, TagGroup, TagList, Text, TextField, TimeField, ToggleButton, Toolbar, Tooltip, TooltipTrigger, useDragAndDrop} from 'react-aria-components';
+import {Button, Calendar, CalendarCell, CalendarGrid, Cell, Checkbox, Column, ColumnResizer, ComboBox, DateField, DateInput, DatePicker, DateRangePicker, DateSegment, Dialog, DialogTrigger, DropZone, FileTrigger, Group, Header, Heading, Input, Keyboard, Label, Link, ListBox, ListBoxItem, ListBoxProps, Menu, MenuItem, MenuTrigger, Modal, ModalOverlay, NumberField, OverlayArrow, Popover, Radio, RadioGroup, RangeCalendar, ResizableTableContainer, Row, SearchField, Section, Select, SelectValue, Separator, Slider, SliderOutput, SliderThumb, SliderTrack, SubmenuTrigger, Switch, Tab, Table, TableBody, TableHeader, TabList, TabPanel, Tabs, TabsProps, Tag, TagGroup, TagList, Text, TextField, TimeField, ToggleButton, Toolbar, Tooltip, TooltipTrigger, useDragAndDrop} from 'react-aria-components';
 import {classNames} from '@react-spectrum/utils';
 import clsx from 'clsx';
 import {FocusRing, isTextDropItem, mergeProps, useButton, useClipboard, useDrag} from 'react-aria';
@@ -315,6 +315,37 @@ export const MenuExample = () => (
   </MenuTrigger>
 );
 
+export const SubmenuExample = () => (
+  <MenuTrigger>
+    <Button aria-label="Menu">☰</Button>
+    <Popover>
+      <Menu className={styles.menu} onAction={action('onAction')}>
+        <Section className={styles.group}>
+          <Header style={{fontSize: '1.2em'}}>Section 1</Header>
+          <MyMenuItem>Foo</MyMenuItem>
+          <SubmenuTrigger>
+            <MyMenuItem>Bar</MyMenuItem>
+            <Menu className={styles.menu} onAction={action('onAction')}>
+              <MyMenuItem>Foo</MyMenuItem>
+              <MyMenuItem>Bar</MyMenuItem>
+              <MyMenuItem>Baz</MyMenuItem>
+            </Menu>
+          </SubmenuTrigger> 
+          <MyMenuItem>Baz</MyMenuItem>
+          <MyMenuItem href="https://google.com">Google</MyMenuItem>
+        </Section>
+        <Separator style={{borderTop: '1px solid gray', margin: '2px 5px'}} />
+        <Section className={styles.group}>
+          <Header style={{fontSize: '1.2em'}}>Section 2</Header>
+          <MyMenuItem>Foo</MyMenuItem>
+          <MyMenuItem>Bar</MyMenuItem>
+          <MyMenuItem>Baz</MyMenuItem>
+        </Section>
+      </Menu>
+    </Popover>
+  </MenuTrigger>
+);
+
 export const MenuComplex = () => (
   <MenuTrigger>
     <Button aria-label="Menu">☰</Button>
@@ -335,6 +366,30 @@ export const MenuComplex = () => (
           <Text slot="description">Description</Text>
           <Keyboard>⌘V</Keyboard>
         </MyMenuItem>
+      </Menu>
+    </Popover>
+  </MenuTrigger>
+);
+
+export const SubMenuExample = () => (
+  <MenuTrigger>
+    <Button aria-label="Menu">☰</Button>
+    <Popover>
+      <Menu className={styles.menu} onAction={action('onAction')}>
+        <Section className={styles.group}>
+          <Header style={{fontSize: '1.2em'}}>Section 1</Header>
+          <MyMenuItem>Foo</MyMenuItem>
+          <MyMenuItem>Bar</MyMenuItem>
+          <MyMenuItem>Baz</MyMenuItem>
+          <MyMenuItem href="https://google.com">Google</MyMenuItem>
+        </Section>
+        <Separator style={{borderTop: '1px solid gray', margin: '2px 5px'}} />
+        <Section className={styles.group}>
+          <Header style={{fontSize: '1.2em'}}>Section 2</Header>
+          <MyMenuItem>Foo</MyMenuItem>
+          <MyMenuItem>Bar</MyMenuItem>
+          <MyMenuItem>Baz</MyMenuItem>
+        </Section>
       </Menu>
     </Popover>
   </MenuTrigger>
