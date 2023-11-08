@@ -315,37 +315,6 @@ export const MenuExample = () => (
   </MenuTrigger>
 );
 
-export const SubmenuExample = () => (
-  <MenuTrigger>
-    <Button aria-label="Menu">☰</Button>
-    <Popover>
-      <Menu className={styles.menu} onAction={action('onAction')}>
-        <Section className={styles.group}>
-          <Header style={{fontSize: '1.2em'}}>Section 1</Header>
-          <MyMenuItem>Foo</MyMenuItem>
-          <SubmenuTrigger>
-            <MyMenuItem>Bar</MyMenuItem>
-            <Menu className={styles.menu} onAction={action('onAction')}>
-              <MyMenuItem>Foo</MyMenuItem>
-              <MyMenuItem>Bar</MyMenuItem>
-              <MyMenuItem>Baz</MyMenuItem>
-            </Menu>
-          </SubmenuTrigger> 
-          <MyMenuItem>Baz</MyMenuItem>
-          <MyMenuItem href="https://google.com">Google</MyMenuItem>
-        </Section>
-        <Separator style={{borderTop: '1px solid gray', margin: '2px 5px'}} />
-        <Section className={styles.group}>
-          <Header style={{fontSize: '1.2em'}}>Section 2</Header>
-          <MyMenuItem>Foo</MyMenuItem>
-          <MyMenuItem>Bar</MyMenuItem>
-          <MyMenuItem>Baz</MyMenuItem>
-        </Section>
-      </Menu>
-    </Popover>
-  </MenuTrigger>
-);
-
 export const MenuComplex = () => (
   <MenuTrigger>
     <Button aria-label="Menu">☰</Button>
@@ -371,25 +340,24 @@ export const MenuComplex = () => (
   </MenuTrigger>
 );
 
-export const SubMenuExample = () => (
+export const SubmenuExample = () => (
   <MenuTrigger>
     <Button aria-label="Menu">☰</Button>
     <Popover>
       <Menu className={styles.menu} onAction={action('onAction')}>
-        <Section className={styles.group}>
-          <Header style={{fontSize: '1.2em'}}>Section 1</Header>
-          <MyMenuItem>Foo</MyMenuItem>
+        <MyMenuItem>Foo</MyMenuItem>
+        <SubmenuTrigger>
           <MyMenuItem>Bar</MyMenuItem>
-          <MyMenuItem>Baz</MyMenuItem>
-          <MyMenuItem href="https://google.com">Google</MyMenuItem>
-        </Section>
-        <Separator style={{borderTop: '1px solid gray', margin: '2px 5px'}} />
-        <Section className={styles.group}>
-          <Header style={{fontSize: '1.2em'}}>Section 2</Header>
-          <MyMenuItem>Foo</MyMenuItem>
-          <MyMenuItem>Bar</MyMenuItem>
-          <MyMenuItem>Baz</MyMenuItem>
-        </Section>
+          <Popover>
+            <Menu className={styles.menu} onAction={action('onAction')}>
+              <MyMenuItem>Foo</MyMenuItem>
+              <MyMenuItem>Bar</MyMenuItem>
+              <MyMenuItem>Baz</MyMenuItem>
+            </Menu>
+          </Popover>
+        </SubmenuTrigger> 
+        <MyMenuItem>Baz</MyMenuItem>
+        <MyMenuItem href="https://google.com">Google</MyMenuItem>
       </Menu>
     </Popover>
   </MenuTrigger>
