@@ -70,9 +70,34 @@ interface InternalSubmenuTriggerProps {
 
 export interface SubmenuTriggerProps extends Omit<InternalSubmenuTriggerProps, 'targetKey'> {}
 
-function SubmenuTrigger(props: InternalSubmenuTriggerProps) {
+function SubmenuTrigger(props: InternalSubmenuTriggerProps, ref: ForwardedRef<HTMLDivElement>) {
+  return useSSRCollectionNode('submenutrigger', props, ref, props.children);
+}
+
+SubmenuTrigger.getCollectionNode = function* (props: SubmenuTriggerProps) {
+  let childArray: ReactElement[] = [];
+  React.Children.forEach(props.children, child => {
+    if (React.isValidElement(child)) {
+      childArray.push(child);
+    }
+  });
+  let [trigger] = childArray;
+  let [, content] = props.children as [ReactElement, ReactElement];
+
+  yield {
+    element: React.cloneElement(trigger, {...trigger.props, hasChildItems: true, isTrigger: true}),
+    wrapper: (element) => (
+      <SubmenuTrigger key={element.key} targetKey={element.key} {...props}>
+        {element}
+        {content}
+      </SubmenuTrigger>
+    )
+  };
+};
+
+function SubmenuTriggerInner({item, parentMenuRef}) {
+  let {props} = item;
   let parentMenuState = useContext(MenuStateContext)!;
-  let parentMenuProps = useContext(MenuContext)!;
   let parentMenuTriggerState = useContext(MenuTriggerStateContext)!;
   let submenuTriggerState = UNSTABLE_useSubmenuTriggerState({triggerKey: props.targetKey}, parentMenuTriggerState);
   let triggerNode = parentMenuState.collection.getItem(props.targetKey);
@@ -80,7 +105,7 @@ function SubmenuTrigger(props: InternalSubmenuTriggerProps) {
   let submenuRef = useRef<HTMLDivElement>(null);
   let {submenuTriggerProps, submenuProps, popoverProps, overlayProps} = UNSTABLE_useSubmenuTrigger({
     node: triggerNode,
-    parentMenuRef: parentMenuProps.ref,
+    parentMenuRef,
     submenuRef
   }, submenuTriggerState, triggerRef);
 
@@ -98,7 +123,7 @@ function SubmenuTrigger(props: InternalSubmenuTriggerProps) {
   );
 }
 
-let _SubmenuTrigger = SubmenuTrigger as (props: SubmenuTriggerProps) => JSX.Element;
+let _SubmenuTrigger = /*#__PURE__*/ (forwardRef as forwardRefType)(SubmenuTrigger) as (props: SubmenuTriggerProps) => JSX.Element;
 export {_SubmenuTrigger as SubmenuTrigger};
 
 export interface MenuProps<T> extends Omit<AriaMenuProps<T>, 'children'>, CollectionProps<T>, StyleProps, SlotProps {}
@@ -140,6 +165,8 @@ function MenuInner<T extends object>({props, collection, menuRef: ref}: MenuInne
           return <Separator {...item.props} />;
         case 'item':
           return <MenuItemInner item={item} />;
+        case 'submenutrigger':
+          return <SubmenuTriggerInner item={item} parentMenuRef={ref} />;
         default:
           throw new Error('Unsupported node type in Menu: ' + item.type);
       }
@@ -157,7 +184,6 @@ function MenuInner<T extends object>({props, collection, menuRef: ref}: MenuInne
       <Provider
         values={[
           [MenuStateContext, state],
-          [MenuContext, {...menuProps, ref}],
           [SeparatorContext, {elementType: 'div'}]
         ]}>
         {children}
