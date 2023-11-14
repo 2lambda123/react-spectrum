@@ -100,7 +100,8 @@ function SubmenuTriggerInner({item, parentMenuRef}) {
   let parentMenuState = useContext(MenuStateContext)!;
   let parentMenuTriggerState = useContext(MenuTriggerStateContext)!;
   let submenuTriggerState = UNSTABLE_useSubmenuTriggerState({triggerKey: props.targetKey}, parentMenuTriggerState);
-  let triggerNode = parentMenuState.collection.getItem(props.targetKey);
+  // TODO: Get correct targetKey
+  let triggerNode = parentMenuState.collection.getItem(item.key);
   let triggerRef = useRef<HTMLButtonElement>(null);
   let submenuRef = useRef<HTMLDivElement>(null);
   let {submenuTriggerProps, submenuProps, popoverProps, overlayProps} = UNSTABLE_useSubmenuTrigger({
