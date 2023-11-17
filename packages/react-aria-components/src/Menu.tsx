@@ -71,10 +71,6 @@ interface InternalSubmenuTriggerProps {
 export interface SubmenuTriggerProps extends Omit<InternalSubmenuTriggerProps, 'targetKey'> {}
 
 function SubmenuTrigger(props: InternalSubmenuTriggerProps, ref: ForwardedRef<HTMLDivElement>) {
-  return useSSRCollectionNode('submenutrigger', props, ref, props.children);
-}
-
-SubmenuTrigger.getCollectionNode = function* (props: SubmenuTriggerProps) {
   let childArray: ReactElement[] = [];
   React.Children.forEach(props.children, child => {
     if (React.isValidElement(child)) {
@@ -84,23 +80,18 @@ SubmenuTrigger.getCollectionNode = function* (props: SubmenuTriggerProps) {
   let [trigger] = childArray;
   let [, content] = props.children as [ReactElement, ReactElement];
 
-  yield {
-    element: React.cloneElement(trigger, {...trigger.props, hasChildItems: true, isTrigger: true}),
-    wrapper: (element) => (
-      <SubmenuTrigger key={element.key} targetKey={element.key} {...props}>
-        {element}
-        {content}
-      </SubmenuTrigger>
-    )
-  };
-};
+  let element = React.cloneElement(trigger, {...trigger.props, hasChildItems: true, isTrigger: true});
+
+  let children = [element, content];
+
+  return useSSRCollectionNode('submenutrigger', props, ref, children);
+}
 
 function SubmenuTriggerInner({item, parentMenuRef}) {
   let {props} = item;
   let parentMenuState = useContext(MenuStateContext)!;
   let parentMenuTriggerState = useContext(MenuTriggerStateContext)!;
   let submenuTriggerState = UNSTABLE_useSubmenuTriggerState({triggerKey: props.targetKey}, parentMenuTriggerState);
-  // TODO: Get correct targetKey
   let triggerNode = parentMenuState.collection.getItem(item.key);
   let triggerRef = useRef<HTMLButtonElement>(null);
   let submenuRef = useRef<HTMLDivElement>(null);
