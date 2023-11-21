@@ -51,7 +51,7 @@ export function MenuTrigger(props: MenuTriggerProps) {
         [MenuContext, menuProps],
         [OverlayTriggerStateContext, state],
         [MenuTriggerStateContext, state],
-        [PopoverContext, {triggerRef: ref, placement: 'bottom start'}]
+        [PopoverContext, {trigger: 'MenuTrigger', triggerRef: ref, placement: 'bottom start'}]
       ]}>
       <PressResponder {...menuTriggerProps} ref={ref} isPressed={state.isOpen}>
         {props.children}
