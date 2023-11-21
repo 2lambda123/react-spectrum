@@ -95,7 +95,7 @@ function SubmenuTriggerInner({item, parentMenuRef}) {
   let triggerNode = parentMenuState.collection.getItem(item.key);
   let triggerRef = useRef<HTMLButtonElement>(null);
   let submenuRef = useRef<HTMLDivElement>(null);
-  let {submenuTriggerProps, submenuProps, popoverProps, overlayProps} = UNSTABLE_useSubmenuTrigger({
+  let {submenuTriggerProps, submenuProps, popoverProps} = UNSTABLE_useSubmenuTrigger({
     node: triggerNode,
     parentMenuRef,
     submenuRef
@@ -106,7 +106,7 @@ function SubmenuTriggerInner({item, parentMenuRef}) {
       values={[
         [MenuContext, {...submenuProps, ref: submenuRef}],
         [OverlayTriggerStateContext, submenuTriggerState],
-        [PopoverContext, {triggerRef, placement: 'bottom start', ...popoverProps, ...overlayProps}]
+        [PopoverContext, {triggerRef, placement: 'bottom start', ...popoverProps}]
       ]}>
       <PressResponder {...submenuTriggerProps} ref={triggerRef} isPressed={submenuTriggerState.isOpen}>
         {props.children}
