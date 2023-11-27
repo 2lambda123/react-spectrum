@@ -77,14 +77,10 @@ function SubmenuTrigger(props: InternalSubmenuTriggerProps, ref: ForwardedRef<HT
       childArray.push(child);
     }
   });
-  let [trigger] = childArray;
-  let [, content] = props.children as [ReactElement, ReactElement];
+  let [trigger, content] = childArray;
+  let element = React.cloneElement(trigger, {key: 'react-aria-2', ...trigger.props, hasChildItems: true, isTrigger: true});
 
-  let element = React.cloneElement(trigger, {...trigger.props, hasChildItems: true, isTrigger: true});
-
-  let children = [element, content];
-
-  return useSSRCollectionNode('submenutrigger', props, ref, children);
+  return [element, content];
 }
 
 function SubmenuTriggerInner({item, parentMenuRef}) {
