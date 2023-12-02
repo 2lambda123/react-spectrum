@@ -18,7 +18,7 @@ import React from 'react';
 import {SpectrumColumnProps} from '@react-types/table';
 
 // Override TS for Column to support spectrum specific props.
-const SpectrumColumn = Column as <T>(props: SpectrumColumnProps<T>) => React.JSX.Element;
+const SpectrumColumn: <T>(props: SpectrumColumnProps<T>) => React.JSX.Element = Column as <T>(props: SpectrumColumnProps<T>) => JSX.Element;
 export {SpectrumColumn as Column};
 
 export {
